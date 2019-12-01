@@ -1,12 +1,12 @@
-import 'dart:math';
-
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mico_flutter/detail/DetailPage.dart';
 
-class MyHomePage extends StatefulWidget {
+class ListContent extends StatefulWidget {
   final String title;
   final List<String> listData;
 
-  MyHomePage({Key key, this.title, this.listData}) : super(key: key);
+  ListContent({Key key, this.title, this.listData}) : super(key: key);
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -18,10 +18,10 @@ class MyHomePage extends StatefulWidget {
   // always marked "final".
 
   @override
-  _MyHomePageState createState() => _MyHomePageState(listData);
+  _ListPageState createState() => _ListPageState(listData);
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _ListPageState extends State<ListContent> {
   final textColor = [
     Colors.black87,
     Colors.green,
@@ -33,7 +33,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   var showDialog = false;
 
-  _MyHomePageState(this.listData);
+  _ListPageState(this.listData);
 
   void addLineAtLast() {
     setState(() {
@@ -73,29 +73,37 @@ class _MyHomePageState extends State<MyHomePage> {
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
     return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-
       body: Stack(children: <Widget>[
         ListView.builder(
             itemBuilder: (context, index) {
-              return ListTile(
-                  title: Text(
-                    listData[index],
-                    style: new TextStyle(
-                        height: 2.2,
-                        wordSpacing: 10,
-                        fontSize: 18,
-                        color: textColor[Random.secure().nextInt(4)]),
-                  ),
-                  onLongPress: () {
-                    showDialog = true;
-                    selectedLineIndex = index;
-                    setState(() {});
-                  });
+              final listItem = listData[index];
+              final color = textColor[index % 4];
+              final heroTag = '飞过去$index';
+              return new GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      new MaterialPageRoute(
+                          builder: (context) =>
+                              new DetailPage('详情页', listItem, heroTag, color)));
+                },
+                onLongPress: () {
+                  showDialog = true;
+                  selectedLineIndex = index;
+                  setState(() {});
+                },
+                child: Hero(
+                    tag: heroTag,
+                    child: Text(
+                      listItem,
+                      style: new TextStyle(
+                          height: 3,
+                          wordSpacing: 10,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: color),
+                    )),
+              );
             },
             padding: const EdgeInsets.all(40),
             itemCount: getSize()),
@@ -120,7 +128,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
       floatingActionButton: FloatingActionButton(
         onPressed: addLineAtLast,
-        tooltip: '增加一行',
         child: Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
