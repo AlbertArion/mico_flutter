@@ -1,10 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mico_flutter/content/JsonContent.dart';
+import 'package:mico_flutter/content/PostItem.dart';
 import 'package:mico_flutter/detail/DetailPage.dart';
 
 class ListContent extends StatefulWidget {
   final String title;
-  final List<String> listData;
+  final List<Post> listData;
 
   ListContent({Key key, this.title, this.listData}) : super(key: key);
 
@@ -22,30 +24,14 @@ class ListContent extends StatefulWidget {
 }
 
 class _ListPageState extends State<ListContent> {
-  final textColor = [
-    Colors.black87,
-    Colors.green,
-    Colors.red[300],
-    Colors.lightBlue
-  ];
   int selectedLineIndex = -1;
-  List<String> listData;
+  List<Post> listData;
 
   var showDialog = false;
 
   _ListPageState(this.listData);
 
-  void addLineAtLast() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      final currentLineCount = listData.length + 1;
-      listData.add('这是第$currentLineCount行');
-    });
-  }
+  void addLineAtLast() {}
 
   void removeSelectedLine() {
     if (selectedLineIndex >= 0) {
@@ -77,7 +63,6 @@ class _ListPageState extends State<ListContent> {
         ListView.builder(
             itemBuilder: (context, index) {
               final listItem = listData[index];
-              final color = textColor[index % 4];
               final heroTag = '飞过去$index';
               return new GestureDetector(
                 onTap: () {
@@ -85,27 +70,17 @@ class _ListPageState extends State<ListContent> {
                       context,
                       new MaterialPageRoute(
                           builder: (context) =>
-                              new DetailPage('详情页', listItem, heroTag, color)));
+                              new DetailPage(listItem, heroTag)));
                 },
                 onLongPress: () {
                   showDialog = true;
                   selectedLineIndex = index;
                   setState(() {});
                 },
-                child: Hero(
-                    tag: heroTag,
-                    child: Text(
-                      listItem,
-                      style: new TextStyle(
-                          height: 3,
-                          wordSpacing: 10,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: color),
-                    )),
+                child: Hero(tag: heroTag, child: PostItem(post: listItem)),
               );
             },
-            padding: const EdgeInsets.all(40),
+            padding: const EdgeInsets.all(10),
             itemCount: getSize()),
         Offstage(
             offstage: !showDialog,

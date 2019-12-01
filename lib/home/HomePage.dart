@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mico_flutter/content/JsonContent.dart';
 import 'package:mico_flutter/content/ListContent.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -22,10 +23,21 @@ class _MyHomePageState extends State<MyHomePage> {
   _MyHomePageState(this.currentPage);
 
   Widget _getCurrentContent() {
-    return ListContent(
-      title: getTitleByIndex(currentPage),
-      listData: List<String>.generate(10, (i) => "这是第${i + 1}行"),
-    );
+    Widget widget = Center(
+        child: Text(_getCurrentTitle(),
+            style: TextStyle(
+                color: Theme.of(context).accentColor,
+                fontSize: 30,
+                fontWeight: FontWeight.bold)));
+    switch (currentPage) {
+      case 0:
+        widget = ListContent(
+          title: getTitleByIndex(currentPage),
+          listData: DataParser.getFirstPagePosts(),
+        );
+        break;
+    }
+    return widget;
   }
 
   String getTitleByIndex(index) {
