@@ -88,12 +88,12 @@ class _ListPageState extends State<ListContent> {
                 title: Text('提示'),
                 content: Text("确认删除此行？"),
                 actions: <Widget>[
-                  FlatButton(
+                  TextButton(
                       child: Text('确定'),
                       onPressed: () {
                         removeSelectedLine();
                       }),
-                  FlatButton(
+                  TextButton(
                       child: Text('取消'),
                       onPressed: () {
                         cancelSelection();
